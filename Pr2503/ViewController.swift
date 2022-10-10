@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         
-        self.bruteForce(passwordToUnlock: "1!gr")
+        //self.bruteForce(passwordToUnlock: "1!gr")
         
         // Do any additional setup after loading the view.
     }
