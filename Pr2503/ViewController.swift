@@ -28,12 +28,10 @@ class ViewController: UIViewController {
     }
 
     private var userPassword: String?
-    private var currentBrutePassword: String? {
-        didSet {
-            currentBrutePasswordLabel.text = currentBrutePassword
-        }
-    }
 
+    private let bruteQueue = DispatchQueue(label: "Bruteforce")
+
+    private var isBruteActive: Bool = false
 
     // MARK: - Actions
     
@@ -42,11 +40,26 @@ class ViewController: UIViewController {
     }
 
     @IBAction func bruteButtonTapped(_ sender: Any) {
-        if let password = passwordTextField.text {
-            activityIndicator.isHidden = false
-            activityIndicator.startAnimating()
-            self.bruteForce(passwordToUnlock: password)
+
+        if !isBruteActive {
+            isBruteActive.toggle()
+            foundedPaswordLabel.text = ""
+            currentBrutePasswordLabel.text = ""
+            bruteButton.setTitle("Остановить", for: .normal)
+            if let password = passwordTextField.text {
+                activityIndicator.isHidden = false
+                activityIndicator.startAnimating()
+                bruteQueue.async {
+                    self.bruteForce(passwordToUnlock: password)
+                }
+            }
+        } else {
+            isBruteActive.toggle()
+            bruteButton.setTitle("Подобрать", for: .normal)
+            bruteQueue.suspend()
+
         }
+
     }
 
     // MARK: - Lifecycle
@@ -65,7 +78,7 @@ class ViewController: UIViewController {
         activityIndicator.isHidden = true
     }
 
-    // MARK: - Brureforce funtionality
+    // MARK: - Bruteforce funtionality
     
     func bruteForce(passwordToUnlock: String) {
         let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
@@ -75,12 +88,14 @@ class ViewController: UIViewController {
         // Will strangely ends at 0000 instead of ~~~
         while password != passwordToUnlock { // Increase MAXIMUM_PASSWORD_SIZE value for more
             password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
-            currentBrutePasswordLabel.text = password
+            DispatchQueue.main.async {
+                self.currentBrutePasswordLabel.text = password
+            }
         }
-        
-        foundedPaswordLabel.text = password
-        activityIndicator.isHidden = true
-
+        DispatchQueue.main.async {
+            self.foundedPaswordLabel.text = password
+            self.activityIndicator.isHidden = true
+        }
     }
 }
 
