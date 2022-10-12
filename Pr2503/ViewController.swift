@@ -67,7 +67,6 @@ class ViewController: UIViewController {
             activityIndicator.isHidden = true
             foundedPaswordLabel.text = "Пароль не взломан"
         }
-
     }
 
     // MARK: - Lifecycle
