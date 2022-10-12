@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3g4-cd-RKK">
-                                <rect key="frame" x="153.5" y="438" width="107" height="30"/>
+                                <rect key="frame" x="153.5" y="437" width="107" height="30"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Изменить цвет"/>
                                 <connections>
@@ -52,12 +52,15 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MM0-9k-FO0">
-                                <rect key="frame" x="159" y="292" width="98" height="31"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Подобрать"/>
+                                <rect key="frame" x="159" y="292" width="79" height="30"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Подобрать"/>
+                                <connections>
+                                    <action selector="bruteButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="JZe-hI-aGZ"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DYN-Kz-Jwf">
-                                <rect key="frame" x="159" y="346" width="102" height="21"/>
+                                <rect key="frame" x="159" y="345" width="102" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="102" id="GMB-j3-C4z"/>
                                 </constraints>
@@ -66,7 +69,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="Hn7-ax-yiT">
-                                <rect key="frame" x="280" y="297" width="20" height="20"/>
+                                <rect key="frame" x="261" y="297" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -95,7 +98,12 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="Hn7-ax-yiT" id="MBg-5W-FJ1"/>
+                        <outlet property="bruteButton" destination="MM0-9k-FO0" id="BSq-ls-pDa"/>
                         <outlet property="button" destination="3g4-cd-RKK" id="yGm-KB-boF"/>
+                        <outlet property="currentBrutePasswordLabel" destination="DYN-Kz-Jwf" id="FUK-t6-J1u"/>
+                        <outlet property="foundedPaswordLabel" destination="OGS-Kx-qYr" id="d61-kV-mn0"/>
+                        <outlet property="passwordTextField" destination="EbR-eH-Bvl" id="jUH-nc-5ma"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
