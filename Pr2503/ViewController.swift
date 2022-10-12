@@ -3,6 +3,7 @@ import UIKit
 class ViewController: UIViewController {
 
     // MARK: - Outlets
+
     @IBOutlet weak var button: UIButton!
 
     @IBOutlet weak var passwordTextField: UITextField!
@@ -11,12 +12,12 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var bruteButton: UIButton!
 
-
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     @IBOutlet weak var currentBrutePasswordLabel: UILabel!
 
     // MARK: - Propierties
+
     var isBlack: Bool = false {
         didSet {
             if isBlack {
@@ -27,11 +28,11 @@ class ViewController: UIViewController {
         }
     }
 
-    private var userPassword: String?
-
     private let bruteQueue = DispatchQueue(label: "Bruteforce")
 
-    private var isBruteActive: Bool = false
+    private var bruteWorkItem: DispatchWorkItem?
+
+    private var isBruteActive = false
 
     // MARK: - Actions
     
@@ -43,21 +44,28 @@ class ViewController: UIViewController {
 
         if !isBruteActive {
             isBruteActive.toggle()
+
             foundedPaswordLabel.text = ""
             currentBrutePasswordLabel.text = ""
             bruteButton.setTitle("Остановить", for: .normal)
+            activityIndicator.isHidden = false
+            activityIndicator.startAnimating()
+
             if let password = passwordTextField.text {
-                activityIndicator.isHidden = false
-                activityIndicator.startAnimating()
-                bruteQueue.async {
+                bruteWorkItem = DispatchWorkItem {
                     self.bruteForce(passwordToUnlock: password)
                 }
+
+                bruteQueue.async(execute: bruteWorkItem ?? DispatchWorkItem { print("Error with brute work item!") })
             }
         } else {
             isBruteActive.toggle()
-            bruteButton.setTitle("Подобрать", for: .normal)
-            bruteQueue.suspend()
 
+            bruteWorkItem?.cancel()
+
+            bruteButton.setTitle("Подобрать", for: .normal)
+            activityIndicator.isHidden = true
+            foundedPaswordLabel.text = "Пароль не взломан"
         }
 
     }
@@ -67,7 +75,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-
     }
 
     // MARK: - Setup
@@ -76,7 +83,17 @@ class ViewController: UIViewController {
         foundedPaswordLabel.text = ""
         currentBrutePasswordLabel.text = ""
         activityIndicator.isHidden = true
+
+        // Code to dismiss a keyboard with tap on view
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(tapGesture)
     }
+
+    // Func to hide keyboard
+        @objc private func hideKeyboard() {
+            self.view.endEditing(true)
+        }
 
     // MARK: - Bruteforce funtionality
     
@@ -87,19 +104,26 @@ class ViewController: UIViewController {
 
         // Will strangely ends at 0000 instead of ~~~
         while password != passwordToUnlock { // Increase MAXIMUM_PASSWORD_SIZE value for more
+
+            if bruteWorkItem?.isCancelled ?? true {
+                return
+            }
+
             password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
+
             DispatchQueue.main.async {
                 self.currentBrutePasswordLabel.text = password
             }
         }
+
         DispatchQueue.main.async {
             self.foundedPaswordLabel.text = password
             self.activityIndicator.isHidden = true
+            self.bruteButton.setTitle("Подобрать", for: .normal)
+            self.isBruteActive = false
         }
     }
 }
-
-
 
 extension String {
     var digits:      String { return "0123456789" }
@@ -124,7 +148,7 @@ func indexOf(character: Character, _ array: [String]) -> Int {
 
 func characterAt(index: Int, _ array: [String]) -> Character {
     return index < array.count ? Character(array[index])
-                               : Character("")
+    : Character("")
 }
 
 func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
@@ -144,4 +168,3 @@ func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
 
     return str
 }
-
