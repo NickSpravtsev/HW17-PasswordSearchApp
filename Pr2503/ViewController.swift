@@ -3,6 +3,7 @@ import UIKit
 class ViewController: UIViewController {
 
     // MARK: - Outlets
+
     @IBOutlet weak var button: UIButton!
 
     @IBOutlet weak var passwordTextField: UITextField!
@@ -11,12 +12,12 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var bruteButton: UIButton!
 
-
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     @IBOutlet weak var currentBrutePasswordLabel: UILabel!
 
     // MARK: - Propierties
+
     var isBlack: Bool = false {
         didSet {
             if isBlack {
@@ -27,13 +28,11 @@ class ViewController: UIViewController {
         }
     }
 
-    private var userPassword: String?
-    private var currentBrutePassword: String? {
-        didSet {
-            currentBrutePasswordLabel.text = currentBrutePassword
-        }
-    }
+    private let bruteQueue = DispatchQueue(label: "Bruteforce")
 
+    private var bruteWorkItem: DispatchWorkItem?
+
+    private var isBruteActive = false
 
     // MARK: - Actions
     
@@ -42,10 +41,31 @@ class ViewController: UIViewController {
     }
 
     @IBAction func bruteButtonTapped(_ sender: Any) {
-        if let password = passwordTextField.text {
+
+        if !isBruteActive {
+            isBruteActive.toggle()
+
+            foundedPaswordLabel.text = ""
+            currentBrutePasswordLabel.text = ""
+            bruteButton.setTitle("Остановить", for: .normal)
             activityIndicator.isHidden = false
             activityIndicator.startAnimating()
-            self.bruteForce(passwordToUnlock: password)
+
+            if let password = passwordTextField.text {
+                bruteWorkItem = DispatchWorkItem {
+                    self.bruteForce(passwordToUnlock: password)
+                }
+
+                bruteQueue.async(execute: bruteWorkItem ?? DispatchWorkItem { print("Error with brute work item!") })
+            }
+        } else {
+            isBruteActive.toggle()
+
+            bruteWorkItem?.cancel()
+
+            bruteButton.setTitle("Подобрать", for: .normal)
+            activityIndicator.isHidden = true
+            foundedPaswordLabel.text = "Пароль не взломан"
         }
     }
 
@@ -54,7 +74,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-
     }
 
     // MARK: - Setup
@@ -63,9 +82,19 @@ class ViewController: UIViewController {
         foundedPaswordLabel.text = ""
         currentBrutePasswordLabel.text = ""
         activityIndicator.isHidden = true
+
+        // Code to dismiss a keyboard with tap on view
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(tapGesture)
     }
 
-    // MARK: - Brureforce funtionality
+    // Func to hide keyboard
+        @objc private func hideKeyboard() {
+            self.view.endEditing(true)
+        }
+
+    // MARK: - Bruteforce funtionality
     
     func bruteForce(passwordToUnlock: String) {
         let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
@@ -74,17 +103,26 @@ class ViewController: UIViewController {
 
         // Will strangely ends at 0000 instead of ~~~
         while password != passwordToUnlock { // Increase MAXIMUM_PASSWORD_SIZE value for more
-            password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
-            currentBrutePasswordLabel.text = password
-        }
-        
-        foundedPaswordLabel.text = password
-        activityIndicator.isHidden = true
 
+            if bruteWorkItem?.isCancelled ?? true {
+                return
+            }
+
+            password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
+
+            DispatchQueue.main.async {
+                self.currentBrutePasswordLabel.text = password
+            }
+        }
+
+        DispatchQueue.main.async {
+            self.foundedPaswordLabel.text = password
+            self.activityIndicator.isHidden = true
+            self.bruteButton.setTitle("Подобрать", for: .normal)
+            self.isBruteActive = false
+        }
     }
 }
-
-
 
 extension String {
     var digits:      String { return "0123456789" }
@@ -109,7 +147,7 @@ func indexOf(character: Character, _ array: [String]) -> Int {
 
 func characterAt(index: Int, _ array: [String]) -> Character {
     return index < array.count ? Character(array[index])
-                               : Character("")
+    : Character("")
 }
 
 func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
@@ -129,4 +167,3 @@ func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
 
     return str
 }
-
