@@ -1,8 +1,22 @@
 import UIKit
 
 class ViewController: UIViewController {
+
+    // MARK: - Outlets
     @IBOutlet weak var button: UIButton!
-    
+
+    @IBOutlet weak var passwordTextField: UITextField!
+
+    @IBOutlet weak var foundedPaswordLabel: UILabel!
+
+    @IBOutlet weak var bruteButton: UIButton!
+
+
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+
+    @IBOutlet weak var currentBrutePasswordLabel: UILabel!
+
+    // MARK: - Propierties
     var isBlack: Bool = false {
         didSet {
             if isBlack {
@@ -12,19 +26,46 @@ class ViewController: UIViewController {
             }
         }
     }
+
+    private var userPassword: String?
+    private var currentBrutePassword: String? {
+        didSet {
+            currentBrutePasswordLabel.text = currentBrutePassword
+        }
+    }
+
+
+    // MARK: - Actions
     
     @IBAction func onBut(_ sender: Any) {
         isBlack.toggle()
     }
-    
+
+    @IBAction func bruteButtonTapped(_ sender: Any) {
+        if let password = passwordTextField.text {
+            activityIndicator.isHidden = false
+            activityIndicator.startAnimating()
+            self.bruteForce(passwordToUnlock: password)
+        }
+    }
+
+    // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        self.bruteForce(passwordToUnlock: "1!gr")
-        
-        // Do any additional setup after loading the view.
+        setupView()
+
     }
+
+    // MARK: - Setup
+
+    private func setupView() {
+        foundedPaswordLabel.text = ""
+        currentBrutePasswordLabel.text = ""
+        activityIndicator.isHidden = true
+    }
+
+    // MARK: - Brureforce funtionality
     
     func bruteForce(passwordToUnlock: String) {
         let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
@@ -34,12 +75,12 @@ class ViewController: UIViewController {
         // Will strangely ends at 0000 instead of ~~~
         while password != passwordToUnlock { // Increase MAXIMUM_PASSWORD_SIZE value for more
             password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
-//             Your stuff here
-            print(password)
-            // Your stuff here
+            currentBrutePasswordLabel.text = password
         }
         
-        print(password)
+        foundedPaswordLabel.text = password
+        activityIndicator.isHidden = true
+
     }
 }
 

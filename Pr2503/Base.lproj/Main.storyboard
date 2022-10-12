@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -16,25 +17,98 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3g4-cd-RKK">
-                                <rect key="frame" x="192" y="483" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3g4-cd-RKK">
+                                <rect key="frame" x="153.5" y="437" width="107" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Изменить цвет"/>
                                 <connections>
                                     <action selector="onBut:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XD4-sb-XPE"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EbR-eH-Bvl">
+                                <rect key="frame" x="159" y="195" width="96" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="96" id="hb6-Q3-ePT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ваш пароль      " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gzv-iQ-r2b">
+                                <rect key="frame" x="20" y="250" width="121" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Введите пароль" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T74-5Q-5h5">
+                                <rect key="frame" x="20" y="201" width="127" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OGS-Kx-qYr">
+                                <rect key="frame" x="159" y="251" width="41.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MM0-9k-FO0">
+                                <rect key="frame" x="159" y="292" width="79" height="30"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Подобрать"/>
+                                <connections>
+                                    <action selector="bruteButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="JZe-hI-aGZ"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DYN-Kz-Jwf">
+                                <rect key="frame" x="159" y="345" width="102" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="102" id="GMB-j3-C4z"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="Hn7-ax-yiT">
+                                <rect key="frame" x="261" y="297" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="DYN-Kz-Jwf" secondAttribute="trailing" symbolic="YES" id="5gJ-gX-joM"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OGS-Kx-qYr" secondAttribute="trailing" symbolic="YES" id="8tL-Um-mJP"/>
+                            <constraint firstItem="gzv-iQ-r2b" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Eu6-0m-Oae"/>
+                            <constraint firstItem="Hn7-ax-yiT" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="253" id="Jh0-fC-3zK"/>
+                            <constraint firstItem="MM0-9k-FO0" firstAttribute="top" secondItem="OGS-Kx-qYr" secondAttribute="bottom" constant="20" id="Jsf-lW-Cwu"/>
+                            <constraint firstItem="gzv-iQ-r2b" firstAttribute="top" secondItem="T74-5Q-5h5" secondAttribute="bottom" constant="28" id="K6z-Zi-o5b"/>
+                            <constraint firstItem="DYN-Kz-Jwf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="159" id="KuR-F3-CLk"/>
+                            <constraint firstItem="T74-5Q-5h5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="M15-rQ-tZ8"/>
+                            <constraint firstItem="3g4-cd-RKK" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Vf3-Qs-M9D"/>
+                            <constraint firstItem="OGS-Kx-qYr" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="gzv-iQ-r2b" secondAttribute="trailing" constant="8" symbolic="YES" id="Z0d-uR-rpK"/>
+                            <constraint firstItem="EbR-eH-Bvl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="159" id="ZQg-Ti-I4U"/>
+                            <constraint firstItem="OGS-Kx-qYr" firstAttribute="top" secondItem="EbR-eH-Bvl" secondAttribute="bottom" constant="22" id="aCm-Wb-0wV"/>
+                            <constraint firstItem="Hn7-ax-yiT" firstAttribute="leading" secondItem="MM0-9k-FO0" secondAttribute="trailing" constant="23" id="bMW-8a-iXs"/>
+                            <constraint firstItem="EbR-eH-Bvl" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="T74-5Q-5h5" secondAttribute="trailing" constant="8" symbolic="YES" id="gFa-uA-T0O"/>
+                            <constraint firstItem="3g4-cd-RKK" firstAttribute="top" secondItem="DYN-Kz-Jwf" secondAttribute="bottom" constant="71" id="lcO-Sn-8iR"/>
+                            <constraint firstItem="T74-5Q-5h5" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="157" id="piR-eM-s3c"/>
+                            <constraint firstItem="EbR-eH-Bvl" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="151" id="uef-BT-rye"/>
+                            <constraint firstItem="OGS-Kx-qYr" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="159" id="v92-My-xhb"/>
+                            <constraint firstItem="MM0-9k-FO0" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="159" id="xGb-wM-JdH"/>
+                            <constraint firstItem="DYN-Kz-Jwf" firstAttribute="top" secondItem="MM0-9k-FO0" secondAttribute="bottom" constant="23" id="y1v-99-uw9"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="Hn7-ax-yiT" id="MBg-5W-FJ1"/>
+                        <outlet property="bruteButton" destination="MM0-9k-FO0" id="BSq-ls-pDa"/>
                         <outlet property="button" destination="3g4-cd-RKK" id="yGm-KB-boF"/>
+                        <outlet property="currentBrutePasswordLabel" destination="DYN-Kz-Jwf" id="FUK-t6-J1u"/>
+                        <outlet property="foundedPaswordLabel" destination="OGS-Kx-qYr" id="d61-kV-mn0"/>
+                        <outlet property="passwordTextField" destination="EbR-eH-Bvl" id="jUH-nc-5ma"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="97"/>
+            <point key="canvasLocation" x="137.68115942028987" y="96.428571428571431"/>
         </scene>
     </scenes>
     <resources>
