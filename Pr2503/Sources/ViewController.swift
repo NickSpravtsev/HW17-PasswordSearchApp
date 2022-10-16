@@ -28,6 +28,26 @@ class ViewController: UIViewController {
         }
     }
 
+    var currentBrurePassword: String? {
+        didSet {
+            DispatchQueue.main.async {
+                self.currentBrutePasswordLabel.text = self.currentBrurePassword ?? ""
+            }
+        }
+    }
+
+    var foundedPassword: String? {
+        didSet {
+            DispatchQueue.main.async {
+                self.foundedPaswordLabel.text = self.foundedPassword ?? ""
+                self.activityIndicator.isHidden = true
+                self.bruteButton.setTitle("Подобрать", for: .normal)
+                self.isBruteActive = false
+                self.passwordTextField.isSecureTextEntry = false
+            }
+        }
+    }
+
     private let bruteQueue = DispatchQueue(label: "Bruteforce")
 
     private var bruteWorkItem: DispatchWorkItem?
@@ -40,11 +60,15 @@ class ViewController: UIViewController {
         isBlack.toggle()
     }
 
-    @IBAction func bruteButtonTapped(_ sender: Any) {
+    @IBAction func generateButtonPressed(_ sender: Any) {
+        self.passwordTextField.isSecureTextEntry = true
+        let password = generateRandomPassword(length: 3)
+        passwordTextField.text = password
+    }
 
+    @IBAction func bruteButtonTapped(_ sender: Any) {
         if !isBruteActive {
             isBruteActive.toggle()
-
             foundedPaswordLabel.text = ""
             currentBrutePasswordLabel.text = ""
             bruteButton.setTitle("Остановить", for: .normal)
@@ -55,18 +79,19 @@ class ViewController: UIViewController {
                 bruteWorkItem = DispatchWorkItem {
                     self.bruteForce(passwordToUnlock: password)
                 }
-
                 bruteQueue.async(execute: bruteWorkItem ?? DispatchWorkItem { print("Error with brute work item!") })
             }
         } else {
             isBruteActive.toggle()
-
             bruteWorkItem?.cancel()
-
             bruteButton.setTitle("Подобрать", for: .normal)
             activityIndicator.isHidden = true
             foundedPaswordLabel.text = "Пароль не взломан"
         }
+    }
+
+    @objc private func passwordTextFieldTouched() {
+        passwordTextField.isSecureTextEntry = true
     }
 
     // MARK: - Lifecycle
@@ -87,62 +112,49 @@ class ViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         tapGesture.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tapGesture)
+
+        passwordTextField.addTarget(self, action: #selector(passwordTextFieldTouched), for: .touchDown)
     }
 
     // Func to hide keyboard
-        @objc private func hideKeyboard() {
-            self.view.endEditing(true)
+    @objc private func hideKeyboard() {
+        self.view.endEditing(true)
+    }
+
+    // MARK: - Generate random password funtionality
+
+    private func generateRandomPassword(length: Int) -> String {
+        let letters: [String] = String().printable.map { String($0) }
+        var password = ""
+        var passwordLength = length
+
+        while passwordLength > 0 {
+            password.append(letters.randomElement() ?? "")
+            passwordLength -= 1
         }
+        return password
+    }
 
     // MARK: - Bruteforce funtionality
     
     func bruteForce(passwordToUnlock: String) {
-        let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
-
+        let letters: [String] = String().printable.map { String($0) }
         var password: String = ""
 
         // Will strangely ends at 0000 instead of ~~~
         while password != passwordToUnlock { // Increase MAXIMUM_PASSWORD_SIZE value for more
-
             if bruteWorkItem?.isCancelled ?? true {
                 return
             }
-
-            password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
-
-            DispatchQueue.main.async {
-                self.currentBrutePasswordLabel.text = password
-            }
+            password = generateBruteForce(password, fromArray: letters)
+            currentBrurePassword = password
         }
-
-        DispatchQueue.main.async {
-            self.foundedPaswordLabel.text = password
-            self.activityIndicator.isHidden = true
-            self.bruteButton.setTitle("Подобрать", for: .normal)
-            self.isBruteActive = false
-        }
-    }
-}
-
-extension String {
-    var digits:      String { return "0123456789" }
-    var lowercase:   String { return "abcdefghijklmnopqrstuvwxyz" }
-    var uppercase:   String { return "ABCDEFGHIJKLMNOPQRSTUVWXYZ" }
-    var punctuation: String { return "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" }
-    var letters:     String { return lowercase + uppercase }
-    var printable:   String { return digits + letters + punctuation }
-
-
-
-    mutating func replace(at index: Int, with character: Character) {
-        var stringArray = Array(self)
-        stringArray[index] = character
-        self = String(stringArray)
+        foundedPassword = password
     }
 }
 
 func indexOf(character: Character, _ array: [String]) -> Int {
-    return array.firstIndex(of: String(character))!
+    return array.firstIndex(of: String(character)) ?? array.count
 }
 
 func characterAt(index: Int, _ array: [String]) -> Character {
@@ -151,19 +163,18 @@ func characterAt(index: Int, _ array: [String]) -> Character {
 }
 
 func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
-    var str: String = string
+    var password: String = string
 
-    if str.count <= 0 {
-        str.append(characterAt(index: 0, array))
+    if password.count <= 0 {
+        password.append(characterAt(index: 0, array))
     }
     else {
-        str.replace(at: str.count - 1,
-                    with: characterAt(index: (indexOf(character: str.last!, array) + 1) % array.count, array))
+        password.replace(at: password.count - 1,
+                         with: characterAt(index: (indexOf(character: password.last ?? Character(""), array) + 1) % array.count, array))
 
-        if indexOf(character: str.last!, array) == 0 {
-            str = String(generateBruteForce(String(str.dropLast()), fromArray: array)) + String(str.last!)
+        if indexOf(character: password.last ?? Character(""), array) == 0 {
+            password = String(generateBruteForce(String(password.dropLast()), fromArray: array)) + String(password.last ?? Character(""))
         }
     }
-
-    return str
+    return password
 }
