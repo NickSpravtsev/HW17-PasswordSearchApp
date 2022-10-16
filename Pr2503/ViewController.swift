@@ -112,7 +112,6 @@ class ViewController: UIViewController {
     
     func bruteForce(passwordToUnlock: String) {
         let characters: [String] = String().printable.map { String($0) }
-
         var password: String = ""
 
         // Will strangely ends at 0000 instead of ~~~
@@ -128,7 +127,7 @@ class ViewController: UIViewController {
 }
 
 func indexOf(character: Character, _ array: [String]) -> Int {
-    return array.firstIndex(of: String(character))!
+    return array.firstIndex(of: String(character)) ?? array.count
 }
 
 func characterAt(index: Int, _ array: [String]) -> Character {
@@ -137,19 +136,18 @@ func characterAt(index: Int, _ array: [String]) -> Character {
 }
 
 func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
-    var str: String = string
+    var password: String = string
 
-    if str.count <= 0 {
-        str.append(characterAt(index: 0, array))
+    if password.count <= 0 {
+        password.append(characterAt(index: 0, array))
     }
     else {
-        str.replace(at: str.count - 1,
-                    with: characterAt(index: (indexOf(character: str.last!, array) + 1) % array.count, array))
+        password.replace(at: password.count - 1,
+                    with: characterAt(index: (indexOf(character: password.last ?? Character(""), array) + 1) % array.count, array))
 
-        if indexOf(character: str.last!, array) == 0 {
-            str = String(generateBruteForce(String(str.dropLast()), fromArray: array)) + String(str.last!)
+        if indexOf(character: password.last ?? Character(""), array) == 0 {
+            password = String(generateBruteForce(String(password.dropLast()), fromArray: array)) + String(password.last ?? Character(""))
         }
     }
-
-    return str
+    return password
 }
