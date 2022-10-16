@@ -41,10 +41,8 @@ class ViewController: UIViewController {
     }
 
     @IBAction func bruteButtonTapped(_ sender: Any) {
-
         if !isBruteActive {
             isBruteActive.toggle()
-
             foundedPaswordLabel.text = ""
             currentBrutePasswordLabel.text = ""
             bruteButton.setTitle("Остановить", for: .normal)
@@ -60,9 +58,7 @@ class ViewController: UIViewController {
             }
         } else {
             isBruteActive.toggle()
-
             bruteWorkItem?.cancel()
-
             bruteButton.setTitle("Подобрать", for: .normal)
             activityIndicator.isHidden = true
             foundedPaswordLabel.text = "Пароль не взломан"
@@ -103,7 +99,6 @@ class ViewController: UIViewController {
 
         // Will strangely ends at 0000 instead of ~~~
         while password != passwordToUnlock { // Increase MAXIMUM_PASSWORD_SIZE value for more
-
             if bruteWorkItem?.isCancelled ?? true {
                 return
             }
@@ -131,8 +126,6 @@ extension String {
     var punctuation: String { return "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" }
     var letters:     String { return lowercase + uppercase }
     var printable:   String { return digits + letters + punctuation }
-
-
 
     mutating func replace(at index: Int, with character: Character) {
         var stringArray = Array(self)
