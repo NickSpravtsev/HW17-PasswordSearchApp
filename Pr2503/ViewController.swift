@@ -43,6 +43,7 @@ class ViewController: UIViewController {
                 self.activityIndicator.isHidden = true
                 self.bruteButton.setTitle("Подобрать", for: .normal)
                 self.isBruteActive = false
+                self.passwordTextField.isSecureTextEntry = false
             }
         }
     }
@@ -57,6 +58,12 @@ class ViewController: UIViewController {
     
     @IBAction func onBut(_ sender: Any) {
         isBlack.toggle()
+    }
+
+    @IBAction func generateButtonPressed(_ sender: Any) {
+        self.passwordTextField.isSecureTextEntry = true
+        let password = generateRandomPassword(length: 3)
+        passwordTextField.text = password
     }
 
     @IBAction func bruteButtonTapped(_ sender: Any) {
@@ -83,6 +90,10 @@ class ViewController: UIViewController {
         }
     }
 
+    @objc private func passwordTextFieldTouched() {
+        passwordTextField.isSecureTextEntry = true
+    }
+
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -101,17 +112,33 @@ class ViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         tapGesture.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tapGesture)
+
+        passwordTextField.addTarget(self, action: #selector(passwordTextFieldTouched), for: .touchDown)
     }
 
     // Func to hide keyboard
-        @objc private func hideKeyboard() {
-            self.view.endEditing(true)
+    @objc private func hideKeyboard() {
+        self.view.endEditing(true)
+    }
+
+    // MARK: - Generate random password funtionality
+
+    private func generateRandomPassword(length: Int) -> String {
+        let letters: [String] = String().printable.map { String($0) }
+        var password = ""
+        var passwordLength = length
+
+        while passwordLength > 0 {
+            password.append(letters.randomElement() ?? "")
+            passwordLength -= 1
         }
+        return password
+    }
 
     // MARK: - Bruteforce funtionality
     
     func bruteForce(passwordToUnlock: String) {
-        let characters: [String] = String().printable.map { String($0) }
+        let letters: [String] = String().printable.map { String($0) }
         var password: String = ""
 
         // Will strangely ends at 0000 instead of ~~~
@@ -119,7 +146,7 @@ class ViewController: UIViewController {
             if bruteWorkItem?.isCancelled ?? true {
                 return
             }
-            password = generateBruteForce(password, fromArray: characters)
+            password = generateBruteForce(password, fromArray: letters)
             currentBrurePassword = password
         }
         foundedPassword = password
@@ -143,7 +170,7 @@ func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
     }
     else {
         password.replace(at: password.count - 1,
-                    with: characterAt(index: (indexOf(character: password.last ?? Character(""), array) + 1) % array.count, array))
+                         with: characterAt(index: (indexOf(character: password.last ?? Character(""), array) + 1) % array.count, array))
 
         if indexOf(character: password.last ?? Character(""), array) == 0 {
             password = String(generateBruteForce(String(password.dropLast()), fromArray: array)) + String(password.last ?? Character(""))
