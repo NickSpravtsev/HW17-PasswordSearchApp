@@ -28,6 +28,25 @@ class ViewController: UIViewController {
         }
     }
 
+    var currentBrurePassword: String? {
+        didSet {
+            DispatchQueue.main.async {
+                self.currentBrutePasswordLabel.text = self.currentBrurePassword ?? ""
+            }
+        }
+    }
+
+    var foundedPassword: String? {
+        didSet {
+            DispatchQueue.main.async {
+                self.foundedPaswordLabel.text = self.foundedPassword ?? ""
+                self.activityIndicator.isHidden = true
+                self.bruteButton.setTitle("Подобрать", for: .normal)
+                self.isBruteActive = false
+            }
+        }
+    }
+
     private let bruteQueue = DispatchQueue(label: "Bruteforce")
 
     private var bruteWorkItem: DispatchWorkItem?
@@ -53,7 +72,6 @@ class ViewController: UIViewController {
                 bruteWorkItem = DispatchWorkItem {
                     self.bruteForce(passwordToUnlock: password)
                 }
-
                 bruteQueue.async(execute: bruteWorkItem ?? DispatchWorkItem { print("Error with brute work item!") })
             }
         } else {
@@ -93,7 +111,7 @@ class ViewController: UIViewController {
     // MARK: - Bruteforce funtionality
     
     func bruteForce(passwordToUnlock: String) {
-        let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
+        let characters: [String] = String().printable.map { String($0) }
 
         var password: String = ""
 
@@ -102,20 +120,10 @@ class ViewController: UIViewController {
             if bruteWorkItem?.isCancelled ?? true {
                 return
             }
-
-            password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
-
-            DispatchQueue.main.async {
-                self.currentBrutePasswordLabel.text = password
-            }
+            password = generateBruteForce(password, fromArray: characters)
+            currentBrurePassword = password
         }
-
-        DispatchQueue.main.async {
-            self.foundedPaswordLabel.text = password
-            self.activityIndicator.isHidden = true
-            self.bruteButton.setTitle("Подобрать", for: .normal)
-            self.isBruteActive = false
-        }
+        foundedPassword = password
     }
 }
 
